@@ -1,0 +1,53 @@
+.editor-page-container {
+    max-width : 1000px;
+    margin : 40px auto;
+    padding : 0 20px;
+}
+
+.editor-card {
+    background : #ffffff;
+    padding : 30px;
+    border-radius : 15px;
+    box-shadow : 0 10px 30px rgba(0 , 0, 0, 0.05);
+}
+
+.editor-title {
+    color : #0f2b5b;
+    margin-bottom : 25px;
+    font-size : 24px;
+    font-weight : 700;
+}
+
+.tinymce-wrapper {
+    border : 1ox solid #ced7f0;
+    border-radius : 10px;
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.tinymce-wrapper:focus-within {
+    border-color : #0f2b5b;
+    box-shadow : 0 0 0 3px rgba(15 , 43, 91, 0.1);
+}
+
+.save-btn {
+    margin-top : 25px;
+    padding : 12px 30px;
+    background-color: #0f2b5b;
+    color : white;
+    border : none;
+    border-radius : 8px;
+    font-size : 16px;
+    font-weight : 600;
+    cursor : pointer;
+    transition : background 0.3s ease , transform 0.1s active;
+    letter-spacing : 0.5px;
+}
+
+.save-btn:hover {
+    background-color: #1a3a6e;
+    box-shadow : 0 4px 12px rgba(15 , 43, 91, 0.1)
+}
+.save-btn:active {
+    transform : scale(0.98);
+}
