@@ -98,7 +98,7 @@ const BlogEditor = () => {
             }}
           />
           <button onClick={handleSave} className="save-btn">
-            SAVE CONTENT
+            COPY CONTENT
           </button>
         </div>
       </div>

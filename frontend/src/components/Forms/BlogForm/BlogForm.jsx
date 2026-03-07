@@ -1,61 +1,76 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import "./BlogForm.css";
 import axiosInstance from '../../../utils/authUtils';
-
-
+import Swal from 'sweetalert2';
 
 const BlogForm = () => {
-    const [topic , setTopic]= useState("");
+    const [topic, setTopic] = useState("");
     const [result, setResult] = useState(null);
-    const [loading , setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const parseBlogContent = (rawScript) => {
         if (!rawScript) return null;
-        const cleanText = rawScript.replace(/```/g,"").trim();
-
         
+        // 1. Clean the text from markdown wrappers
+        const cleanText = rawScript.replace(/```(markdown|html)?/gi, "").replace(/```/g, "").trim();
+
+        // 2. Initial split based on your ||| delimiter
         const parts = cleanText.split("|||").map(part => part.trim());
 
+        // 3. Process the Body (parts[2]) to add spacing before numbers
+        let rawBody = parts[2] || "";
+        
+        /**
+         * REGEX EXPLANATION:
+         * This looks for a newline or space followed by:
+         * - Markdown headers (### 1.) 
+         * - OR standard numbering (1.)
+         * and replaces it with two newlines to ensure clean spacing.
+         */
+        const formattedBody = rawBody
+            .replace(/(?:\r?\n|\s)+(###\s*\d+\.|\d+\.)/g, '\n\n$1')
+            .trim();
+
         return {
-            intro : parts[0] || "",
-            toc : parts[1] || "",
-            body : parts[2] || "",
-            faqs : parts[3] || "",
-            bottomLine : parts[4] || ""
+            intro: parts[0] || "",
+            toc: parts[1] || "",
+            body: formattedBody, // Now contains extra spacing before numbers
+            faqs: parts[3] || "",
+            bottomLine: parts[4] || ""
         };
     }
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setResult(null);
-        
-        try{
+
+        try {
             const response = await axiosInstance.post(
                 "/api/ai",
-                {topic}
+                { topic }
             );
-            if(response.data.success){
+            if (response.data.success) {
                 const parsedContent = parseBlogContent(response.data.result.script);
                 setResult({
                     ...response.data.result,
-                   splitContent : parsedContent
-            });
+                    splitContent: parsedContent
+                });
             }
-            else{
+            else {
                 alert("API return an error");
             }
         }
-        catch(error){
+        catch (error) {
             console.error("Error calling API:", error);
             Swal.fire({
-            icon: 'warning',
-            title: 'Mission Failed',
-            text: 'Something went wrong while generating the blog!',
-            confirmButtonColor: '#f39c12'
-        });
+                icon: 'warning',
+                title: 'Mission Failed',
+                text: 'Something went wrong while generating the blog!',
+                confirmButtonColor: '#f39c12'
+            });
         }
-        finally{
+        finally {
             setLoading(false);
         }
     };
@@ -63,71 +78,70 @@ const BlogForm = () => {
     return (
         <div className="blog-container">
             <div className="blog-card">
-            <h2>Create Blog</h2>
+                <h2>Create Blog</h2>
 
-            <form onSubmit={handleSubmit} className="blog-form">
-                <div className="form-group">
-                <label>Topic</label>
-                <input
-                    type="text"
-                    placeholder="Enter blog topic..."
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    required
-                />
-                </div>
+                <form onSubmit={handleSubmit} className="blog-form">
+                    <div className="form-group">
+                        <label>Topic</label>
+                        <input
+                            type="text"
+                            placeholder="Enter blog topic..."
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                <button type="submit" className="generate-btn" disabled={loading}>
-                    {loading ? "Generating..." : "Generate Blog"}
-                </button>
-            </form>
+                    <button type="submit" className="generate-btn" disabled={loading}>
+                        {loading ? "Generating..." : "Generate Blog"}
+                    </button>
+                </form>
             </div>
 
-            {loading && <div className= "loading-spinner">Processing...</div>}
+            {loading && <div className="loading-spinner">Processing...</div>}
 
             {result && !loading && (
-            <div className="result-card">
-                
-                <div className="blog-section intro-content">
-                    {result.splitContent.intro}
-                </div>
+                <div className="result-card">
 
-                <div className="blog-section toc-content">
-                    <h3>Table Of Content</h3>
-                    <div className="pre-wrap">{result.splitContent.toc}</div>
-                </div>
+                    <div className="blog-section intro-content">
+                        {result.splitContent.intro}
+                    </div>
 
-                <div className="blog-section body-content">
-                    <div className="pre-wrap">{result.splitContent.body}</div>
-                </div>
+                    <div className="blog-section toc-content">
+                        <h3>Table Of Content</h3>
+                        <div className="pre-wrap">{result.splitContent.toc}</div>
+                    </div>
 
-                <div className = "blog-section faqs-content">
-                    <h3>FAQs</h3>
-                    <div className="pre-wrap">{result.splitContent.faqs}</div>
-                </div>
+                    <div className="blog-section body-content">
+                        {/* The pre-wrap class in your CSS will now respect the double newlines */}
+                        <div className="pre-wrap">{result.splitContent.body}</div>
+                    </div>
 
-                <div className="blog-section bottom-line-content">
-                    <strong>{result.splitContent.bottomLine}</strong>
-                </div>
-                < hr/>
+                    <div className="blog-section faqs-content">
+                        <h3>FAQs</h3>
+                        <div className="pre-wrap">{result.splitContent.faqs}</div>
+                    </div>
 
+                    <div className="blog-section bottom-line-content">
+                        <strong>{result.splitContent.bottomLine}</strong>
+                    </div>
+                    <hr />
 
-                <div className="seo-report">
-                <h3>SEO Report</h3>
-                <div className="seo-item">
-                    <span>Helpfulness Score</span>
-                    <strong>{result.seo_report.helpfulness_score * 100}%</strong>
+                    <div className="seo-report">
+                        <h3>SEO Report</h3>
+                        <div className="seo-item">
+                            <span>Helpfulness Score</span>
+                            <strong>{Math.round(result.seo_report.helpfulness_score * 100)}%</strong>
+                        </div>
+                        <div className="seo-item">
+                            <span>E-E-A-T Score</span>
+                            <strong>{Math.round(result.seo_report.eeat_score * 100)}%</strong>
+                        </div>
+                    </div>
                 </div>
-                <div className="seo-item">
-                    <span>E-E-A-T Score</span>
-                    <strong>{result.seo_report.eeat_score * 100}%</strong>
-                </div>
-                </div>
-            </div>
             )}
         </div>
-);
-
+    );
 };
 
 export default BlogForm;
