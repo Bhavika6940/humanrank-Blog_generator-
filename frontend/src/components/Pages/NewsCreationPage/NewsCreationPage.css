@@ -1,0 +1,34 @@
+.news-page {
+    min-height : 100vh;
+    max-width : 900px;
+    margin : 0 auto;
+    padding: 40px 20px;
+}
+
+.page-header {
+    text-align : center;
+    margin-bottom : 50px;
+}
+
+.page-header h1{
+    font-size: 3rem;
+    font-weight : 800;
+    color : #0f2b5b;
+    margin-bottom : 15px;
+}
+
+.page-header p {
+    color: #353d49;
+    font-size : 20px;
+    font-weight : 600;
+}
+
+.form-section {
+    margin-bottom: 40px;
+}
+
+.results-section {
+    display :  flex;
+    flex-direction : column;
+    gap : 25px;
+}

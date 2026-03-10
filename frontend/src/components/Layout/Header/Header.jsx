@@ -16,6 +16,9 @@ const Header = () => {
             <NavLink to= "/create" className="nav-item">
                 Create Blog
             </NavLink>
+             <NavLink to= "/create-news" className="nav-item">
+                Create News
+            </NavLink>
             <NavLink to= "/editor" className="nav-item">
                 Editor
             </NavLink>

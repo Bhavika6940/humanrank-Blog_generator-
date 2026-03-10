@@ -5,7 +5,8 @@ const HomePage = lazy(() => import('./components/Pages/HomePage/HomePage'))
 const BlogCreationPage = lazy(() => import('./components/Pages/BlogCreationPage/BlogCreationPage'))
 const BlogDetails = lazy(() => import('./components/Pages/BlogDetails/BlogDetails'))
 const Login = lazy(() => import('./components/Pages/Login/Login') );
-const Editor = lazy(() => import('./components/Pages/Editor/Editor'))
+const Editor = lazy(() => import('./components/Pages/Editor/Editor'));
+const NewsCreationPage = lazy(() => import('./components/Pages/NewsCreationPage/NewsCreationPage'));
 function App( ){
   return (
     <Router>
@@ -17,6 +18,7 @@ function App( ){
         <Route path="/blog/:slug" element={<BlogDetails />} />
         <Route path = "/" element = {<Login />} />
         <Route path = "/editor" element = {<Editor />} />
+        <Route path = "/create-news" element = {<NewsCreationPage />} />
       </Routes>
       </Suspense>
     </Router>
