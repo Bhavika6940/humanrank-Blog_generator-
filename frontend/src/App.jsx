@@ -1,5 +1,6 @@
 import {BrowserRouter as Router , Routes , Route} from 'react-router-dom';
 import { lazy , Suspense } from "react";
+import ProtectedRoute from "./components/AuthGuard/AuthGuard";
 const BlogHistory = lazy(() => import('./components/Pages/BlogHistory/BlogHistory'));
 const HomePage = lazy(() => import('./components/Pages/HomePage/HomePage'))
 const BlogCreationPage = lazy(() => import('./components/Pages/BlogCreationPage/BlogCreationPage'))
@@ -12,13 +13,13 @@ function App( ){
     <Router>
       <Suspense fallback = {<div className="loader">Loading page...</div>}>
       <Routes>
-        <Route path="/home" element={<HomePage />}/>
-        <Route path="/create" element = {<BlogCreationPage/>} />
-        <Route path = "/history" element = {<BlogHistory />} />
-        <Route path="/blog/:slug" element={<BlogDetails />} />
+        <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>}/>
+        <Route path="/create" element = {<ProtectedRoute><BlogCreationPage/></ProtectedRoute>} />
+        <Route path = "/history" element = {<ProtectedRoute><BlogHistory /></ProtectedRoute>} />
+        <Route path="/blog/:slug" element={<ProtectedRoute><BlogDetails /></ProtectedRoute>} />
         <Route path = "/" element = {<Login />} />
-        <Route path = "/editor" element = {<Editor />} />
-        <Route path = "/create-news" element = {<NewsCreationPage />} />
+        <Route path = "/editor" element = {<ProtectedRoute><Editor /></ProtectedRoute>} />
+        <Route path = "/create-news" element = {<ProtectedRoute><NewsCreationPage /></ProtectedRoute>} />
       </Routes>
       </Suspense>
     </Router>
