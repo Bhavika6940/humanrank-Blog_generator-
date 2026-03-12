@@ -1,13 +1,13 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import axiosInstance , {setToken , setUser}from "../../../utils/authUtils";
-
+import axiosInstance from "../../../utils/authUtils";
+import { useAuth } from "../../context/AuthContext";
 
 
 const Login = () => {
     const navigate = useNavigate();
+    const {login } = useAuth();
     const [email , setEmail] = useState("");
     const [password , setPassword] = useState("");
     const [loading , setLoading] = useState(false);
@@ -32,11 +32,10 @@ const Login = () => {
             );
 
 
-            if(response.data.success){
-                setToken(response.data.token);
-                setUser(response.data.user);
-                navigate("/home");
-            }
+            if (response.data.success) {
+                    login(response.data.user, response.data.token); 
+                    navigate("/home");
+        }
 
             else{
                 setError( response.data.message || "Login failed");

@@ -1,14 +1,17 @@
 import { Navigate } from "react-router-dom";
-import { getToken} from "../../utils/authUtils";
+import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ children}) => {
-    const token = getToken();
-    console.log("Token",token);
+const ProtectedRoute = ({ children }) => {
+    const { user } = useAuth();
 
-    if(!token){
-        return <Navigate to="/" replace />
+    console.log("ProtectedRoute user:", user);
+
+    if (!user) {
+        console.log("Redirecting to login");
+        return <Navigate to="/" replace />;
     }
 
     return children;
 };
-export default ProtectedRoute
+
+export default ProtectedRoute;
